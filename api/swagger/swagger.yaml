@@ -75,12 +75,6 @@ parameters:
     description: The device/thing identifier number
     type: string
     required: true
-  mac-address:
-    name: mac-address
-    in: path
-    description: MAC address
-    type: string
-    required: true
     
 ################################################################################
 #                                           Paths                              #
@@ -97,17 +91,6 @@ paths:
       operationId: getdevicecerts
       tags:
         - Devices
-      parameters:
-        - name: from_addr
-          in: query
-          description: Starting mac address to return in range
-          required: false
-          type: string
-        - name: to_addr
-          in: query
-          description: Ending mac address to return in range
-          required: false
-          type: string
       responses:
         "200":
           description: Success
@@ -119,16 +102,21 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+  /devices:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: devices
     post:
       description: Add a new device MAC. Implicitly generates a corresponding cert bundle
       # used as the method name of the controller
       operationId: postdevicecerts
       parameters:
         - name: macaddr
-          in: query
-          description: Device MAC address
-          required: true
-          type: string
+          in: body
+          description: MAC address to create
+          schema:
+            type: string
+      tags:
+        - Devices
       responses:
         "200":
           description: Success
